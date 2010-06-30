@@ -15,6 +15,10 @@
 # limitations under the License.
 #
 
+# KarBooker App for Security Team and for Employees Travelling to different Countries in Africa . 
+
+# __Author__= Richard Ngamita(ngamita@gmail.com)
+
 
 import cgi
 import os
@@ -22,6 +26,48 @@ import os
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import util
 from google.appengine.ext.webapp import template
+from google.appengine.ext import db
+
+
+
+class KarBookerDb(db.Model):
+  #This should setup the instance with info of what the Traveler has Booked 
+  # Per instance 
+  country = db.StringProperty()
+  email = db.StringPropert()
+  trav_reg_worksite = db.StringProperty()
+  trav_fname = db.StringProperty()
+  trav_lname = db.StringProperty()
+  trav_mname = db.StringProperty()
+  booked_datetime = db.DateTimeProperty()
+  
+  
+  #check out the use of a picker here for Date time ??Reasearch this
+  arriv_date = db.DateProperty()
+  arriv_fli_num = db.StringProperty()
+  dep_date = db.DateProperty()
+  dep_fli_num = db.StringProperty()
+  hotel_add = db.StringProperty(multiline = True )
+  trav_add_comments = db.StringProperty(multiline = True)
+  Sec_comments_int = db.StringProperty(multiline = True)
+  
+  
+class KarBookerExtDb(db.Model):
+  # Admin here should pick data from the KarBookerDB and do check box to accept or throw out , If no accepted , reason for not accepting + Comments . 
+  trans_confirm = db.BooleanProperty()
+  driv_name = db.StringProperty()
+  # May have to Add different driver DB - so as i can do CRUD on drives 
+  driv_contacts = db.StringProperty()
+  
+  #May have to Add different Car DB - so as i can do crude on Cars 
+  veh_type = db.StringProperty()
+  sec_comments_ext = db.StringProperty(multiline = True)
+  
+  
+  
+
+
+
 
 
 class MainHandler(webapp.RequestHandler):
