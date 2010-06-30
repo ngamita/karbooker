@@ -34,11 +34,9 @@ class KarBookerDb(db.Model):
   #This should setup the instance with info of what the Traveler has Booked 
   # Per instance 
   country = db.StringProperty()
-  email = db.StringPropert()
+  email = db.StringProperty()
   trav_reg_worksite = db.StringProperty()
-  trav_fname = db.StringProperty()
-  trav_lname = db.StringProperty()
-  trav_mname = db.StringProperty()
+  trav_name = db.StringProperty()
   booked_datetime = db.DateTimeProperty()
   
   
@@ -67,17 +65,17 @@ class KarBookerExtDb(db.Model):
   
 
 
-
-
-
 class MainHandler(webapp.RequestHandler):
 
   def get(self):
-    self.response.out.write('Hello Karbooker App!')
+    #self.response.out.write('Internal Karbooker App!')
+    p_karbooker = db.GqlQuery("SELECT * FROM KarBookerDb")
+    
+    
     
     
     template_values = {
-    "project_name":"KarBooker"
+    "p_karbooker":p_karbooker
     
     }
     
@@ -89,7 +87,12 @@ class MainHandler(webapp.RequestHandler):
     
 class BookMe(webapp.RequestHandler):
   def post(self):
-    pass
+    karbooker = KarBookerDb()
+    karbooker.country = self.request.get('country')
+    #Add the KarBooker data from the Form to the DataStore as for now .
+    karbooker.put()
+    self.redirect("/")
+    
 
 
 def main():
