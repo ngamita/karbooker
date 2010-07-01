@@ -47,7 +47,7 @@ class KarBookerDb(db.Model):
   dep_fli_num = db.StringProperty()
   hotel_add = db.StringProperty(multiline = True )
   trav_add_comments = db.StringProperty(multiline = True)
-  Sec_comments_int = db.StringProperty(multiline = True)
+  sec_comments_int = db.StringProperty(multiline = True)
   
   
 class KarBookerExtDb(db.Model):
@@ -89,6 +89,8 @@ class BookMe(webapp.RequestHandler):
   def post(self):
     karbooker = KarBookerDb()
     karbooker.country = self.request.get('country')
+    karbooker.country = self.request.get('sec_comments_int')
+    
     #Add the KarBooker data from the Form to the DataStore as for now .
     karbooker.put()
     self.redirect("/")
@@ -96,7 +98,8 @@ class BookMe(webapp.RequestHandler):
 
 
 def main():
-  application = webapp.WSGIApplication([('/', MainHandler)],
+  application = webapp.WSGIApplication([('/', MainHandler),
+                                        ("/display",BookMe)],
                                        debug=True)
   util.run_wsgi_app(application)
 
