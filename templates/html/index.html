@@ -75,8 +75,9 @@
 
 
 {% for p in p_karbooker %}
+{{p.country}} {{p.email}} {{p.trav_reg_worksite}} {{p.trav_name}} {{p.booked_datetime}}
 
-{{p.country}}{{p.sec_comments.int}}
+
 
 {% endfor %}
 

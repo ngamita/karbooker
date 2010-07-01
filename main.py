@@ -31,26 +31,30 @@ from google.appengine.ext import db
 
 
 class KarBookerDb(db.Model):
+  """
   #This should setup the instance with info of what the Traveler has Booked 
   # Per instance 
+  #Watch out for Injection - use the CGI import to shoot this......
+  
+  """
   country = db.StringProperty()
-  email = db.StringProperty()
+  email = db.EmailProperty()
   trav_reg_worksite = db.StringProperty()
   trav_name = db.StringProperty()
-  booked_datetime = db.DateTimeProperty()
+  booked_datetime = db.DateTimeProperty(auto_now_add = True)
   
   
   #check out the use of a picker here for Date time ??Reasearch this
-  arriv_date = db.DateProperty()
+  arriv_date = db.DateTimeProperty()
   arriv_fli_num = db.StringProperty()
-  dep_date = db.DateProperty()
+  dep_date = db.DateTimeProperty()
   dep_fli_num = db.StringProperty()
   hotel_add = db.StringProperty(multiline = True )
   trav_add_comments = db.StringProperty(multiline = True)
   sec_comments_int = db.StringProperty(multiline = True)
   
   
-class KarBookerExtDb(db.Model):
+class KarAuthDb(db.Model):
   # Admin here should pick data from the KarBookerDB and do check box to accept or throw out , If no accepted , reason for not accepting + Comments . 
   trans_confirm = db.BooleanProperty()
   driv_name = db.StringProperty()
@@ -81,25 +85,55 @@ class MainHandler(webapp.RequestHandler):
     
     
     
-    path = os.path.join(os.path.dirname(__file__),'index.html')
+    path = os.path.join(os.path.dirname(__file__),'templates/html/index.html')
     self.response.out.write(template.render(path,template_values))
     
     
-class BookMe(webapp.RequestHandler):
+class KarBookMe(webapp.RequestHandler):
   def post(self):
-    karbooker = KarBookerDb()
-    karbooker.country = self.request.get('country')
-    karbooker.country = self.request.get('sec_comments_int')
+    kar_booker = KarBookerDb()
+    
+    
+    
+    #Write this as a loop to pick from db instance and assign the "name" from HTML .
+    
+    
+    kar_booker.country = self.request.get('country')
+    kar_booker.email = self.request.get('email')
+    kar_booker.trav_reg_worksite = self.request.get('trav_reg_worksite')
+    kar_booker.trav_name = self.request.get('trav_name')
+    kar_booker.booked_datetime = self.request.get('booked_datetime')
     
     #Add the KarBooker data from the Form to the DataStore as for now .
-    karbooker.put()
+    kar_booker.put()
     self.redirect("/")
+
+    
+class KarAuth(webapp.RequestHandler):
+  """
+  Hold the Interface for the team to View the Applications for Travels and Assign cars or Deny etc 
+  
+  
+  
+  """
+  def post(self):
+    kar_auth = KarAuthDb()
+    kar_auth.trans_confirm = self.request.get("trans_confirm")
     
 
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
 def main():
   application = webapp.WSGIApplication([('/', MainHandler),
-                                        ("/display",BookMe)],
+                                        ("/display",KarBookMe)],
                                        debug=True)
   util.run_wsgi_app(application)
 
