@@ -1,131 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-<body>
+	<head>
+		<title>KarBooker--App</title>
+		<link rel="stylesheet" type="text/css" href="css/main.css"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
+	</head>
+	<body>
 
+	<div style="width: 100%;">
+		<div class="topLine">
+			<div style="float: left;"><img src="images/kb.png" /></div>
+			<div style="float: left;" class="headline">KarBookings</div>
+			<div style="float: right;"><a href="{{ url }}">{{ url_linktext }}</a> Welcome {{user.nickname}}! </div>
+		</div>
+	</div>
 
+<div style="clear: both;"/>	
 
-<form action="/display" method="post">
+{# Check if we have any KarBookings, only in this case render the table #}
+
+{% if numberbookings %}
+ 
+You have a total number of {{numberbookings}} KarBookings. 
+
 <table>
-<tr>
-<td>Country:</td>
-<td>
-<input type="text" name="country" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Email:</td>
-<td>
-<input type="text" name="email" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Traveller's Registered Worksite:</td>
-<td>
-<input type="text" name="trav_reg_worksite" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Traveller's Name:</td>
-<td>
-<input type="text" name="trav_name" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Arrival Date:</td>
-<td>
-<input type="text" name="first_name" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Arrival Flight Number:</td>
-<td>
-<input type="text" name="arr_fli_num" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Departure Date:</td>
-<td>
-<input type="text" name="dep_date" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Departure Flight Number:</td>
-<td>
-<input type="text" name="dep_fli_num" value="" maxlength="100" />
-</td>
-</tr>
-<tr>
-<td>Hotel Address:</td>
-<td>
-<textarea rows="3" cols="20" name="h_address"></textarea>
-</td>
-</tr>
-<tr>
-<td>Traveller's Addittional Comments:</td>
-<td>
-<textarea rows="3" cols="20" name="trav_add_comments"></textarea>
-</td>
-</tr>
-<tr>
-<td>Security Comments:</td>
-<td>
-<textarea rows="3" cols="20" name="sec_comments"></textarea>
-</td>
-</tr>
+  <tr>
+    
 
+      <th>Traveller Name</th>
+      <th>Country</th>
+      <th>Email</th>
+      <th>Travellor Reg Worksite</th>
+      <th>Created</th>
+      <th>Updated</th>
+      <th>Arrival Date</th>
+      <th>Arrival Flight Number</th>
+      <th>Departure Date</th>
+      <th>Departure Flight Number</th>
+      <th>Hotel Address</th>
+      <th>Traveller's Comments</th>
+      <th>Security Comments</th>
+      
+    </tr>
 
-
-{% for p in p_karbooker %}
-{{p.country}} {{p.email}} {{p.trav_reg_worksite}} {{p.trav_name}} {{p.booked_datetime}}
-
-
-
+{% for p_bookings in p_karbooker %}
+<tr> 
+<td>
+{{p_bookings.trav_name}}
+</td>
+<td>
+{{p_bookings.country}}
+</td>
+<td>
+{{p_bookings.email}}
+</td>
+<td>
+{{p_bookings.trav_reg_worksite}}
+</td>
+<td>
+{{p_bookings.created|date:"d.m.Y"}}
+</td>
+<td>
+{{p_bookings.updated|date:"d.m.Y"}}
+</td>
+<td>
+<a class="done" href="/karbook_me?id={{p_bookings.key.id}}" >Delete</a>
+</td>
+<td>
+<!--<a class="email" href="/email?id={{p_bookings.key.id}}" >Email</a>-->
+</td>
+</tr> 
 {% endfor %}
-
-
-
-
-<!--
-
-<tr>
-<td>Lunch:</td>
-<td>
-<input type="radio" name="lunch" value="pasta" /> Pasta
-<input type="radio" name="lunch" value="rissotto" /> Rissotto
-</td>
-</tr>
-<tr><td>Drinks:</td>
-<td>
-<input type="checkbox" name="drinks" value="beer" /> Beer
-<input type="checkbox" name="drinks" value="wine" /> Wine
-</td>
-</tr>
-<tr><td>Preferred City:</td>
-<td>
-<select>
-  <option value ="sydney">Sydney</option>
-  <option value ="melbourne">Melbourne</option>
-  <option value ="cromwell">Cromwell</option>
-  <option value ="queenstown">Queenstown</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>Comments:</td>
-<td>
-<textarea rows="3" cols="20" name="comments"></textarea>
-</td>
-</tr>
-
--->
-<tr><td> </td>
-<td>
-<input type="submit" value="Submit" />
-</td>
-</tr>
-
-
-
 </table>
 
+{% endif %}
+
+
+<hr />
+
+
+
+<div class="headline">Create new KarBooking?</div>
+
+{% if user %}
+
+<form action="/karbook_me" method="post">
+	<table>
+		<tr>
+			<td><label for="trav_name">Traveller's Name</label></td>
+			<td><input type="text" name="trav_name" id="trav_name" size="80"/></td>
+		</tr>
+		<tr>
+			<td><label for="country">Country</label></td>
+			<td><input type="text" name="country" id="country" size="80"/></td>
+		</tr>
+		<tr>
+			<td><label for="email">Email</label></td>
+			<td><input type="text" name="email" id="email"/></td>
+		</tr>
+		<tr>
+			<td><label for="trav_reg_work">Traveller's Name</label></td>
+			<td><input type="text" name="trav_reg_work" id="trav_reg_work" size="80"/></td>
+		</tr>
+		<tr>
+			<td><label for="arriv_date">Arrival Date</label></td>
+			<td><input type="text" name="arriv_date" id="shortDescriptions" size="80"/></td>
+		</tr>
+		<tr>
+			<td><label for="arriv_fli_num">Arrival Flight Number</label></td>
+			<td><input type="text" name="arriv_fli_num" id="arriv_fli_num" size="80"/></td>
+		</tr>
+			<tr>
+			<td><label for="dep_date">Departure Date</label></td>
+			<td><input type="text" name="dep_date" id="dep_date" size="80"/></td>
+		</tr>
+			<tr>
+			<td><label for="dep_fli_num">Departure Flight Number</label></td>
+			<td><input type="text" name="dep_fli_num" id="dep_fli_num" size="80"/></td>
+		</tr>
+		
+		
+		<tr>
+			<td valign="top"><label for="hotel_addr">Hotel Address</label></td>
+			<td><textarea rows="4" cols="80" name="hotel_addr" id="hotel_addr"></textarea></td>
+		</tr>
+		
+		<tr>
+			<td><label for="trav_add_comments">Traveller's Comments</label></td>
+			<td><input type="text" name="trav_add_comments" id="trav_addr_comments" size="80"/></td>
+		</tr>
+		<tr>
+			<td><label for="sec_comments_int">Security Comments</label></td>
+			<td><input type="text" name="sec_comments_int" id="sec_comments_int" size="80"/></td>
+		</tr>
+
+
+			<td colspan="2" align="right"><input type="submit" value="Create"/></td>
+		</tr>
+	</table>
+</form>
+
+{% else %}
+Login with your Google Account to create and review Bookings.
+{% endif%}
+
+
 </body>
-</html>
+</html><html>
+<body>
+
